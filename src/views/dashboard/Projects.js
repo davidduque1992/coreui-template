@@ -65,45 +65,114 @@ const workers = [
   },
 ]
 
-const estados = ['Finalizada', 'Pendiente', 'En curso']
-
-const tareas = [
+const platforms = [
   {
     id: 1,
-    descripcion: 'Crear usuarios',
-    worker_id: 5,
-    captura: null,
-    archivo: null,
-    estado: 1,
+    name: 'Web',
+    color: 'primary', //primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark' | 'light' |
   },
   {
     id: 2,
-    descripcion: 'Blanquear contraseñas',
-    worker_id: 1,
-    captura: null,
-    archivo: null,
-    estado: 2,
+    name: 'Celulares',
+    color: 'success',
   },
   {
     id: 3,
-    descripcion: 'Arreglar montos de reporte',
-    worker_id: 3,
+    name: 'Escritorio',
+    color: 'danger',
+  },
+]
+
+const estados = [
+  {
+    id: 0,
+    value: 'Finalizada',
+    color: 'success',
+  },
+  {
+    id: 1,
+    value: 'En curso',
+    color: 'primary',
+  },
+  {
+    id: 2,
+    value: 'Pendiente',
+    color: 'danger',
+  },
+]
+
+const proyectos = [
+  {
+    id: 1,
+    titulo: 'Formulario de inscripción vendimia + gestor',
+    descripcion:
+      'Formulario de inscripción para precandidatas a reina en la vendimia departamental y gestor para protocolo.',
+    encargado_id: 2,
+    equipo: [5, 2, 1],
+    github_url: 'github.com/...',
+    comentario: 'Algo',
+    plataforma: 0,
     captura: null,
     archivo: null,
     estado: 0,
   },
   {
+    id: 2,
+    titulo: 'ChatBot',
+    descripcion: 'Consulta de deudas desde el chatBot y formulario de generación de incidentes.',
+    encargado_id: 4,
+    equipo: [4, 2],
+    github_url: 'github.com/...',
+    comentario: 'Algo',
+    plataforma: 0,
+    captura: null,
+    archivo: null,
+    estado: 0,
+  },
+  {
+    id: 3,
+    titulo: 'Ciudad Universitaria Web',
+    descripcion: 'Rediseño de pagina web de ciudad universitaria con React.',
+    encargado_id: 5,
+    equipo: [5, 2, 3],
+    github_url: 'github.com/...',
+    comentario: 'Algo',
+    plataforma: 0,
+    captura: null,
+    archivo: null,
+    estado: 1,
+  },
+  {
     id: 4,
-    descripcion: 'Verificar error en la tabla T01I600 con el usuario fulanito',
-    worker_id: 4,
+    titulo: 'Ciudad Universitaria Movil',
+    descripcion: 'Creación de App para celulares de ciudad universitaria con React Native.',
+    encargado_id: 1,
+    equipo: [4, 2, 1],
+    github_url: 'github.com/...',
+    comentario: 'Algo',
+    plataforma: 1,
+    captura: null,
+    archivo: null,
+    estado: 1,
+  },
+  {
+    id: 5,
+    titulo: 'MendoApp app movil',
+    descripcion: 'Creación de app movil de Ciudad de Mendoza.',
+    encargado_id: 2,
+    equipo: [2, 4],
+    github_url: 'github.com/...',
+    comentario: 'Algo',
+    plataforma: 1,
     captura: null,
     archivo: null,
     estado: 2,
   },
 ]
 
-const Tasks = () => {
+const Projects = () => {
   const [pasoSelect, setPasoSelect] = useState(0)
+  const [pSelect, setPSelect] = useState(0)
   const [visible, setVisible] = useState(false)
   const [toast, addToast] = useState(0)
   const toaster = useRef()
@@ -153,11 +222,11 @@ const Tasks = () => {
     })
   }
 
-  const openEditor = (paso) => {
-    setPasoSelect(paso)
-    if (pasoSelect !== null) {
+  const openEditor = (p_a_id) => {
+    setPSelect(p_a_id)
+    if (pSelect !== null) {
       setVisible(true)
-      console.log(paso)
+      console.log(p_a_id)
     }
   }
 
@@ -210,17 +279,24 @@ const Tasks = () => {
         onPaste={handleOnPaste}
       >
         <COffcanvasHeader>
-          <COffcanvasTitle>Crear Tarea</COffcanvasTitle>
+          <COffcanvasTitle>{proyectos[pSelect].titulo}</COffcanvasTitle>
           <CCloseButton className="text-reset" onClick={() => setVisible(false)} />
         </COffcanvasHeader>
         <COffcanvasBody>
           <CForm>
-            <CFormTextarea
-              id="descripcion"
-              label="Descripción"
-              placeholder="Agregá una descripción de la tarea"
-              rows={3}
-            ></CFormTextarea>
+            {pSelect !== 0 && (
+              <CFormTextarea
+                id="descripcion"
+                label="Descripción"
+                defaultValue={
+                  pSelect > 0
+                    ? proyectos[pSelect].descripcion
+                    : 'Agregá una descripción de la tarea'
+                }
+                //placeholder="Agregá una descripción de la tarea"
+                rows={3}
+              />
+            )}
             {src !== null && <CCardImage src={src} style={{ width: '60%' }} />}
 
             <section>
@@ -252,7 +328,7 @@ const Tasks = () => {
       <CToaster ref={toaster} push={toast} placement="top-end" />
       <CCard>
         <CCardHeader className="text-center">
-          <strong>Buscar Tarea</strong>
+          <strong>Buscar Proyecto</strong>
         </CCardHeader>
         <CCardBody>
           <CForm
@@ -265,23 +341,23 @@ const Tasks = () => {
             <CCol md={6}>
               {/* <CFormLabel htmlFor="validationCustomUsername"></CFormLabel> */}
               <CInputGroup className="has-validation">
-                <CInputGroupText id="inputGroupPrepend">Codigo:</CInputGroupText>
+                <CInputGroupText id="inputGroupPrepend">Nombre del proyecto:</CInputGroupText>
                 <CFormInput
                   type="text"
-                  id="codigo"
-                  name="codigo"
+                  id="nombreProyecto"
+                  name="nombreProyecto"
                   aria-describedby="inputGroupPrepend"
                   required
                   onChange={handleChange}
                 />
-                <CFormFeedback invalid>Ingresar Codigo del Error</CFormFeedback>
+                <CFormFeedback invalid>Ingresa el nombre del proyecto</CFormFeedback>
               </CInputGroup>
             </CCol>
             <CCol md={6}>
               {/* <CFormLabel htmlFor="validationCustomUsername"></CFormLabel> */}
               <CInputGroup className="has-validation">
-                <CInputGroupText id="inputGroupPrepend">Asignada a:</CInputGroupText>
-                <CFormSelect id="area" name="area" onChange={handleChange}>
+                <CInputGroupText id="inputGroupPrepend">Encargado/a:</CInputGroupText>
+                <CFormSelect id="encargado" name="encargado" onChange={handleChange}>
                   {/* <option value={pro_err.id_areas}>{areas.includes(pro_err.id_areas).nombreArea}</option> */}
                   {workers.map((w) => (
                     <option key={w.id} value={w.id}>
@@ -303,13 +379,13 @@ const Tasks = () => {
                   required
                   onChange={handleChange}
                 />
-                <CFormFeedback invalid>Ingresar Descripción</CFormFeedback>
+                <CFormFeedback invalid>Ingresar descripción</CFormFeedback>
               </CInputGroup>
             </CCol>
 
             <CCol xs={12} className="text-center">
               <CButton color="primary" type="submit">
-                Actualizar
+                Buscar
               </CButton>
             </CCol>
           </CForm>
@@ -319,24 +395,26 @@ const Tasks = () => {
             <CTableRow>
               <CTableHeaderCell scope="col"></CTableHeaderCell>
               <CTableHeaderCell scope="col">#</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Descripción</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Titulo</CTableHeaderCell>
               <CTableHeaderCell scope="col">Estado</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Asignada a</CTableHeaderCell>
-              <CTableHeaderCell scope="col">Fecha</CTableHeaderCell>
+              <CTableHeaderCell scope="col">Encargado/a</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            {tareas.map((item, key) => {
+            {proyectos.map((item, key) => {
               return (
-                <CTableRow key={key} onClick={() => openEditor(key)}>
+                <CTableRow
+                  key={key}
+                  onClick={() => openEditor(key)}
+                  color={estados[item.estado].color}
+                >
                   <CTableHeaderCell scope="row">
                     <CIcon icon={cilLineSpacing} />
                   </CTableHeaderCell>
                   <CTableHeaderCell scope="row">{item.id}</CTableHeaderCell>
-                  <CTableDataCell>{item.descripcion}</CTableDataCell>
-                  <CTableDataCell>{item.archivo}</CTableDataCell>
-                  <CTableDataCell>{workers[item.worker_id - 1].name}</CTableDataCell>
-                  <CTableDataCell>{item.captura}</CTableDataCell>
+                  <CTableDataCell>{item.titulo}</CTableDataCell>
+                  <CTableDataCell>{estados[item.estado].value}</CTableDataCell>
+                  <CTableDataCell>{workers[item.encargado_id - 1].name}</CTableDataCell>
                 </CTableRow>
               )
             })}
@@ -347,4 +425,4 @@ const Tasks = () => {
   )
 }
 
-export default Tasks
+export default Projects
