@@ -5,7 +5,6 @@ import {
   cilCalculator,
   cilChartPie,
   cilCursor,
-  cilDescription,
   cilDrop,
   cilNotes,
   cilPencil,
@@ -53,6 +52,12 @@ const _nav = [
   {
     component: CNavTitle,
     name: 'Components',
+  },
+  {
+    component: CNavItem,
+    name: 'ImageEditor',
+    to: '/ImageEditor',
+    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
     component: CNavGroup,

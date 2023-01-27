@@ -5,6 +5,7 @@ const Tasks = React.lazy(() => import('./views/dashboard/Tasks'))
 const Projects = React.lazy(() => import('./views/dashboard/Projects'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
+const ImageEditorComponent = React.lazy(() => import('./components/ImageEditorComponent'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -59,6 +60,7 @@ const routes = [
   { path: '/projects', name: 'Projects', element: Projects },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
+  { path: '/imageEditor', name: 'ImageEditor', element: ImageEditorComponent },
   { path: '/theme/typography', name: 'Typography', element: Typography },
   { path: '/base', name: 'Base', element: Cards, exact: true },
   { path: '/base/accordion', name: 'Accordion', element: Accordion },
